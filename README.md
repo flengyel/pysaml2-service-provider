@@ -36,10 +36,12 @@ This project implements a Flask-based SAML2 Service Provider (SP) with Single Lo
 
 1. Update `conf/sp_conf.py` with the appropriate SAML2 configuration for your environment.
 2. Replace `BASE_URL` in `conf/sp_conf.py` with your service provider's base URL.
-3. Install an x509 signing certificate and in `conf/cert.pem` and `conf/key.pem`, respectively.
+3. Install an x509 signing certificate and in `conf/sp_cert.pem` and `conf/sp_key.pem`, respectively.
 4. Change `server.pem` and `server.key` at the end of `sp.py` to refer to the server certificate and key for this service provider. 
-5. The service provider metadata is accessible from `BASE_URL+/saml/metadata`
-6. Configure your Identity Provider (IdP) to trust this Service Provider.
+5. The service provider metadata will be accessible from `BASE_URL/saml/metadata` while the service provider runs.
+6. Install your Identity Provider (IdP) metadata in `conf/idp-metadata.xml`
+7. Configure your Identity Provider (IdP) to trust this Service Provider using the service provider metadata at `BASE_URL/saml/metadata`.
+8. Consider augmenting the service provider metadata with `ResponseLocation` set equal to the `SingleLogout` `Location` value (the same endpoint).
 
 ### Running the Application
 
