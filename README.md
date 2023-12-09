@@ -21,7 +21,7 @@ This project implements a Flask-based SAML2 Service Provider (SP) with Single Lo
 1. Clone the repository:
 
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/flengyel/pysaml2-service-provider.git
    ```
 
 2. Install the required dependencies:
@@ -36,24 +36,28 @@ This project implements a Flask-based SAML2 Service Provider (SP) with Single Lo
 
 1. Update `conf/sp_conf.py` with the appropriate SAML2 configuration for your environment.
 2. Replace `BASE_URL` in `conf/sp_conf.py` with your service provider's base URL.
-3. Configure your Identity Provider (IdP) to trust this Service Provider.
+3. Install an x509 signing certificate and in `conf/cert.pem` and `conf/key.pem`, respectively.
+4. Change `server.pem` and `server.key` at the end of `sp.py` to refer to the server certificate and key for this service provider. 
+5. The service provider metadata is accessible from `BASE_URL+/saml/metadata`
+6. Configure your Identity Provider (IdP) to trust this Service Provider.
 
 ### Running the Application
 
 1. Run the Flask application:
 
    ```bash
-   python app.py
+   source bin/activate
+   python sp.py
    ```
 
-2. Access the application at `https://localhost:8443` (or your configured URL and port).
+2. Access the application at `https://BASE_URL:8443` (or your configured URL and port).
 
 ### Enabling Debug Mode
 
 Use the `--debug` flag when starting the application to enable detailed logging:
 
 ```bash
-python app.py --debug
+python sp.py --debug
 ```
 
 ## Usage
@@ -69,7 +73,7 @@ Contributions to this project are welcome. Please ensure to follow the guideline
 
 ## License
 
-This project is licensed under the [Your License Name]. See the LICENSE file for details.
+This project is licensed under the MIT license. See the LICENSE file for details.
 
 ## Acknowledgements
 
