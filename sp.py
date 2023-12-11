@@ -53,7 +53,7 @@ def saml_client_for(config):
 app = Flask(__name__)
 # Set the secret key to some random bytes. Keep this really secret!
 # This enables Flask session cookies
-app.secret_key = 'your secret key goes here, e.g. 1234'
+app.secret_key = '^ovdD@8Sj3P!8&k$8dYze$kweWMVu88jbzV^o3r5LUs7cPU2'
 
 @app.route("/")
 def hello():
@@ -242,7 +242,10 @@ def logout():
         return "Error creating logout request", 500
 
     # Encode the LogoutRequest (typically base64)
-    encoded_request = base64.b64encode(logout_request_xml.encode()).decode()
+    #print(f"dir(logout_request_xml): {dir(logout_request_xml)}")
+    logout_request_xml_str = logout_request_xml.to_string()
+    debug_log(logout_request_xml_str)
+    encoded_request = base64.b64encode(logout_request_xml_str).decode()
 
     # Create the HTML form using the encoded logout request
     html_form = f"""
