@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from flask import Flask, request, redirect, url_for, make_response, session
 from markupsafe import escape
 from saml2 import entity
@@ -53,7 +52,7 @@ def saml_client_for(config):
 app = Flask(__name__)
 # Set the secret key to some random bytes. Keep this really secret!
 # This enables Flask session cookies
-app.secret_key = '^ovdD@8Sj3P!8&k$8dYze$kweWMVu88jbzV^o3r5LUs7cPU2'
+app.secret_key = 'changeme'
 
 @app.route("/")
 def hello():
@@ -242,10 +241,20 @@ def logout():
         return "Error creating logout request", 500
 
     # Encode the LogoutRequest (typically base64)
-    #print(f"dir(logout_request_xml): {dir(logout_request_xml)}")
-    logout_request_xml_str = logout_request_xml.to_string()
-    debug_log(logout_request_xml_str)
-    encoded_request = base64.b64encode(logout_request_xml_str).decode()
+    debug_log(f"type(logout_request_xml): {type(logout_request_xml)}")
+
+    if isinstance(logout_request_xml, str):
+        # type str if authn_requests_signed': True (recommended)
+        # Convert string to bytes for base64 encoding
+        encoded_request = base64.b64encode(logout_request_xml.encode()).decode()
+    elif hasattr(logout_request_xml, 'to_string'):
+        # type <Logout Request> if  'authn_requests_signed': False!
+        # Use 'to_string' method if available and it's already a byte string
+        encoded_request = base64.b64encode(logout_request_xml.to_string()).decode()
+    else:
+        # Handle other unexpected cases or raise an error
+        raise TypeError(f"Unexpected type for logout_request_xml: {type(logout_request_xml)}")
+
 
     # Create the HTML form using the encoded logout request
     html_form = f"""
