@@ -52,7 +52,7 @@ def saml_client_for(config):
 app = Flask(__name__)
 # Set the secret key to some random bytes. Keep this really secret!
 # This enables Flask session cookies
-app.secret_key = 'changeme'
+app.secret_key = '^ovdD@8Sj3P!8&k$8dYze$kweWMVu88jbr8WUb4q5v79FrBzmzV^o3r5LUs7cPU2'
 
 @app.route("/")
 def hello():
@@ -75,12 +75,12 @@ def hello():
         html += "<p><a href='/logout'>Logout</a></p>"
     else:
         # User is not authenticated, display login link
-        html = "<h1>Welcome to the CUNY Performance Test Service Provider</h1>"
+        html = "<h1>Performance Test Service Provider</h1>"
         html += "<p>SP entityID: <a href=" + BASE_URL + "/saml/metadata>" + BASE_URL + "/saml/metadata</a></p>"
         html += "<p>You are not logged in.</p>"
         html += "<p><a href='/login'>Login via SAML</a></p>"
 
-    html += "<p>(c) 2020-2023 Florian Lengyel CUNY and ChatGPT4.</p>"
+    html += "<p>(c) 2020-2023 Florian Lengyel and (c) 2023 ChatGPT4.</p>"
     return html, 200
 
 
@@ -127,8 +127,11 @@ def acs():
     client = saml_client_for(CONFIG)
     try:
         # Parse the SAML Response
+
         saml_response = request.form.get('SAMLResponse')
         authn_response = client.parse_authn_request_response(saml_response, entity.BINDING_HTTP_POST)
+
+        debug_log(f"authn_response.status_ok(): {authn_response.status_ok()}")
 
         # Extract the user's NameID and attributes
         name_id = authn_response.assertion.subject.name_id.text
@@ -181,7 +184,7 @@ def acs():
 
         # Clear any existing session and display error
         session.clear()
-        return "INTERNAL SERVER ERROR", 500
+        return f"EXCEPTION {e}", 403
 
     # Load and parse the metadata XML file
 
@@ -421,5 +424,5 @@ def metadata():
 
 if __name__ == "__main__":
     # replace server.pem with your own server certificate and server.key with your own server key
-    app.run(debug=True, host='0.0.0.0', port=8443, ssl_context=('/etc/pki/tls/server.pem', '/etc/pki/tls/private/server.key'))
+    app.run(debug=False, host='0.0.0.0', port=8443, ssl_context=('server.pem', 'server.key'))
 
